@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hayal Panosu</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fff5fc;
+      color: #3d1a4d;
+      margin: 0;
+      padding: 2rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #8b2e7c;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #8b2e7c;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #6c1f61;
+    }
+    .dream-card {
+      background-color: #fceeff;
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dream-text {
+      flex-grow: 1;
+    }
+    .delete-btn {
+      background-color: #e75480;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background-color: #c7436a;
+    }
+    #letterArea {
+      display: none;
+      margin-top: 15px;
+    }
+    footer {
+      margin-top: 50px;
+      font-size: 0.9rem;
+      color: #777;
+    }
+    a {
+      color: #8b2e7c;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="welcomeScreen">
+    <h1>Hayal Panosu</h1>
+    <button onclick="startApp()">Hayal Kurmaya Başla</button>
+  </div>
+
+  <div class="container" id="mainApp" style="display:none;">
+    <h2>Yeni bir hayal ekle ✨</h2>
+    <input type="text" id="dreamInput" placeholder="Hayalini yaz...">
+    <input type="date" id="dreamDate">
+    <button onclick="addDream()">Ekle</button>
+
+    <div id="dreamList"></div>
+
+    <button onclick="toggleLetter()">📩 Kendime Mektup Yaz</button>
+    <div id="letterArea">
+      <textarea id="letterText" placeholder="Sevgili gelecekteki ben..."></textarea>
+      <input type="date" id="letterDate">
+      <button onclick="saveLetter()">Mektubu Kaydet</button>
+    </div>
+
+    <footer>
+      💖 <a href="https://www.buymeacoffee.com/mavisoftstudios" target="_blank">Beni Destekle</a> <br/>
+      © 2025 Mavi Soft Studios – Hayaller Gerçektir.
+    </footer>
+  </div>
+
+  <script>
+    function startApp() {
+      document.getElementById("welcomeScreen").style.display = "none";
+      document.getElementById("mainApp").style.display = "block";
+    }
+
+    function addDream() {
+      const text = document.getElementById("dreamInput").value;
+      const date = document.getElementById("dreamDate").value;
+      if (text && date) {
+        const div = document.createElement("div");
+        div.className = "dream-card";
+
+        const span = document.createElement("span");
+        span.className = "dream-text";
+        span.innerText = `${text} (${date})`;
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "delete-btn";
+        delBtn.innerText = "Sil";
+        delBtn.onclick = () => div.remove();
+
+        div.appendChild(span);
+        div.appendChild(delBtn);
+        document.getElementById("dreamList").appendChild(div);
+
+        document.getElementById("dreamInput").value = "";
+        document.getElementById("dreamDate").value = "";
+      }
+    }
+
+    function toggleLetter() {
+      const area = document.getElementById("letterArea");
+      area.style.display = area.style.display === "none" ? "block" : "none";
+    }
+
+    function saveLetter() {
+      const metin = document.getElementById("letterText").value;
+      const tarih = document.getElementById("letterDate").value;
+      alert(`Mektubun kaydedildi 🎁 ${tarih} tarihinde seni bekliyor!`);
+      document.getElementById("letterText").value = "";
+      document.getElementById("letterDate").value = "";
+      toggleLetter();
+    }
+  </script>
+</body>
+</html>
