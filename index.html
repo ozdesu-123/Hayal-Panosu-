@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hayal Panosu</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -13,14 +15,17 @@
       padding: 2rem;
       text-align: center;
     }
+
     .container {
       max-width: 500px;
       margin: auto;
     }
+
     h1 {
       font-size: 2.5rem;
       color: #8b2e7c;
     }
+
     input, textarea, button {
       width: 100%;
       padding: 10px;
@@ -29,15 +34,18 @@
       border: 1px solid #ccc;
       font-size: 1rem;
     }
+
     button {
       background-color: #8b2e7c;
       color: white;
       border: none;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #6c1f61;
     }
+
     .dream-card {
       background-color: #fceeff;
       margin: 10px 0;
@@ -48,9 +56,7 @@
       justify-content: space-between;
       align-items: center;
     }
-    .dream-text {
-      flex-grow: 1;
-    }
+
     .delete-btn {
       background-color: #e75480;
       border: none;
@@ -60,38 +66,30 @@
       margin-left: 10px;
       cursor: pointer;
     }
-    .delete-btn:hover {
-      background-color: #c7436a;
-    }
+
     #letterArea {
       display: none;
       margin-top: 15px;
     }
+
     footer {
       margin-top: 50px;
       font-size: 0.9rem;
       color: #777;
     }
+
     a {
       color: #8b2e7c;
       text-decoration: none;
     }
-    a:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
-  <div class="container" id="welcomeScreen">
+  <div class="container">
     <h1>Hayal Panosu</h1>
-    <button onclick="startApp()">Hayal Kurmaya Başla</button>
-  </div>
-
-  <div class="container" id="mainApp" style="display:none;">
-    <h2>Yeni bir hayal ekle ✨</h2>
-    <input type="text" id="dreamInput" placeholder="Hayalini yaz...">
+    <input type="text" id="dreamInput" placeholder="Bir hayal kur...">
     <input type="date" id="dreamDate">
-    <button onclick="addDream()">Ekle</button>
+    <button onclick="addDream()">Hayali Ekle</button>
 
     <div id="dreamList"></div>
 
@@ -102,6 +100,8 @@
       <button onclick="saveLetter()">Mektubu Kaydet</button>
     </div>
 
+    <button onclick="downloadDreams()">📥 Hayallerimi İndir</button>
+
     <footer>
       💖 <a href="https://www.buymeacoffee.com/mavisoftstudios" target="_blank">Beni Destekle</a> <br/>
       © 2025 Mavi Soft Studios – Hayaller Gerçektir.
@@ -109,10 +109,7 @@
   </div>
 
   <script>
-    function startApp() {
-      document.getElementById("welcomeScreen").style.display = "none";
-      document.getElementById("mainApp").style.display = "block";
-    }
+    let allDreams = [];
 
     function addDream() {
       const text = document.getElementById("dreamInput").value;
@@ -122,18 +119,21 @@
         div.className = "dream-card";
 
         const span = document.createElement("span");
-        span.className = "dream-text";
         span.innerText = `${text} (${date})`;
 
         const delBtn = document.createElement("button");
         delBtn.className = "delete-btn";
         delBtn.innerText = "Sil";
-        delBtn.onclick = () => div.remove();
+        delBtn.onclick = () => {
+          div.remove();
+          allDreams = allDreams.filter(d => !(d.text === text && d.date === date));
+        };
 
         div.appendChild(span);
         div.appendChild(delBtn);
         document.getElementById("dreamList").appendChild(div);
 
+        allDreams.push({ text, date });
         document.getElementById("dreamInput").value = "";
         document.getElementById("dreamDate").value = "";
       }
@@ -151,6 +151,20 @@
       document.getElementById("letterText").value = "";
       document.getElementById("letterDate").value = "";
       toggleLetter();
+    }
+
+    function downloadDreams() {
+      if (allDreams.length === 0) {
+        alert("Henüz kaydedilmiş bir hayalin yok.");
+        return;
+      }
+      const blob = new Blob([JSON.stringify(allDreams, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "hayallerim.json";
+      a.click();
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
